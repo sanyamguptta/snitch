@@ -37,7 +37,7 @@ async function sendTokenResponse(user, res, message) {
 
 export const register = async (req, res) => {
 
-    const { fullname, email, password, contact } = req.body;
+    const { fullname, email, password, contact, isSeller } = req.body;
 
     try { 
         const isUserAlreadyExits = await userModel.findOne({
@@ -60,7 +60,8 @@ export const register = async (req, res) => {
             fullname,
             email, 
             password: hash,
-            contact
+            contact,
+            role: isSeller ? "buyer" : "seller",
         });
 
         // calling function for generating token & setting it into cookies & sending final response
