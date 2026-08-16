@@ -21,7 +21,7 @@ function validateRequest(req, res, next) {
 
 // validation of data while receiving it in req.body
 // registeration validation so that data may not reaches in DB in different format
-export const validateRegister = [
+export const validateRegisterUser = [
     body("fullname")
         .notEmpty().withMessage("fullname is required")
         .isLength({ min: 3 }).withMessage("fullname must be atleast 3 characters long"),
@@ -39,3 +39,11 @@ export const validateRegister = [
     // calling validatRequest middleware for finding if any error found or not
     validateRequest
 ]   
+
+
+export const validateLoginUser = [
+    body("email")
+        .isEmail().withMessage("Invalid email format"),
+    body("password")
+        .isLength({ min: 6 }).withMessage("Password must be 6 characters long"),
+]

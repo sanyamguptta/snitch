@@ -1,7 +1,7 @@
 import userModel from "../models/user.model.js";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { config } from "dotenv";
+import { config } from "../config/config.js";
 
 
 // function for creating token & sendinb back valid response
@@ -75,4 +75,51 @@ export const register = async (req, res) => {
         })
     }
     
+}
+
+export const login = async (req, res) => {
+
+    const { email, password } = req.body;
+
+    try { 
+        const user = await userModel.findOne({
+            $or: [
+                { email },
+            ]
+        });
+
+        if(!user) {
+            return res.status(400).json({
+                message: 'Invalid email or password',
+            })
+        };
+    
+        const isPasswordMatched = bcrypt.compare(password, user.password);
+
+        if(!isPasswordMatched) {
+            return res.status(400).json({
+                message: 'Invalid email or password',
+            })
+        }
+
+        // calling function for generating token & setting it into cookies & sending final response
+        sendTokenResponse(user, res, "User logged in successfully!");
+
+    }
+    catch(err) {
+        console.log(err);
+        return res.status(500).json({
+            message: 'Server error'
+        })
+    }
+}
+
+
+export const googleCallback = async (req, res) => {
+
+    // prints logged in user data
+    console.log(req.user);
+    // after printing redirecting to the home page
+    res.redirect('http://localhost:5173/');
+
 }
